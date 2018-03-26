@@ -1,0 +1,67 @@
+\chapter{Preliminaries}
+In order to understand the system. The reader needs to understand a few concepts related to Data Mining and Databases. This chapter attempts to give a brief overview of the underlying concepts needed to understand the system.
+
+\section{Star Schema}
+Our system has the underlying assumption that the data that will be used to generate explanations is the Fact Table for a Star schema. To understand the Fact Table, it is important to understand the structure of the Star Schema. A traditional relational database system contains a set of tables related by primary and foreign keys. For instance, We may take the example if student taking courses. The students and classes can be represented in separate tables. One student can take multiple courses and a course can have multiple students. This is an example of a many-to-many relationship. 
+In order to represent this data in a relational database, the course table and the students table need to have a primary and foreign key. Another way of storing this data without primary and foreign keys is to save all students information against all course information. Tables.~\ref{tbl:courses},~\ref{tbl:student} and ~\ref{tbl:fact} show some dummy data to illustrate our example.
+
+The illustrated example has a normalized schema. Table~\ref{tbl:fact} can be considered as the central part of the schema because it contains the foreign keys to the students and courses table. 
+
+
+
+\begin{center}
+  \begin{tabular}{ | l | c | r | }
+    \hline
+    \textbf{CourseId} & \textbf{Course} & \textbf{Credits} \\ \hline
+    1 & Databases & 3 \\ \hline
+    2 & Artificial Intelligence & 3 \\ \hline
+    3 & Algorithms & 3 \\
+    \hline
+  \end{tabular}
+\end{center}
+\captionof{table}{Courses Table} 
+\label{tbl:courses}
+
+\begin{center}
+  \begin{tabular}{ | l | c | r | }
+    \hline
+    \textbf{StudentId} & \textbf{Name} & \textbf{Grade} \\ \hline
+    1 & John Doe & 3.2 \\ \hline
+    2 & Alice & 3.3 \\ \hline
+    3 & Bob & 3.8 \\
+    \hline
+  \end{tabular}
+\end{center}
+\captionof{table}{Students Table} 
+\label{tbl:student}
+
+\begin{center}
+  \begin{tabular}{ | l | l | c | l | }
+    \hline
+    \textbf{StudentId} & \textbf{CourseId} & \textbf{Compulsory} & \textbf{Grade} \\ \hline
+    1 & 1 & yes & 84 \\ \hline
+    1 & 2 & no & 100 \\ \hline
+    1 & 3 & yes & 49 \\ \hline
+    2 & 1 & yes & 75 \\ \hline
+    2 & 3 & no & 92 \\ \hline
+    3 & 3 & no & 95 \\
+    \hline
+  \end{tabular}
+\end{center}
+\captionof{table}{Fact Table} 
+\label{tbl:fact}
+
+This type of schema where the there is a central table consisting of facts while the remaining tables contain the meta data is called a star schema. The central table is called the Fact Table, whereas, the tables containing the meta data are called the Dimension Tables.
+
+\section{Observations}
+
+\section{Explanations}
+
+\section{K-Folds Cross Validation}
+
+\section{Precision and Recall}
+
+\section{Map Reduce}
+
+\section{Spark}
+

@@ -1,0 +1,123 @@
+\documentclass[12pt,letterpaper]{report}
+\newcommand{\prof}[1]{\textbf{\color{red} [#1]}}
+\usepackage{natbib}
+\usepackage{geometry}
+%\usepackage{fancyheadings} fancyheadings is obsolete: replaced by fancyhdr. JL
+\usepackage{fancyhdr}
+\usepackage{afterpage}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsbsy}
+\usepackage{algorithm} 
+\usepackage{algpseudocode} 
+\usepackage{dcolumn,array}
+\usepackage{tocloft}
+\usepackage{asudis}
+\usepackage{booktabs} % For formal tables
+\usepackage{color}
+
+\usepackage{wrapfig}
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage[labelsep=colon]{caption}
+
+\usepackage{amsmath}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\graphicspath{ {images/} }
+		
+\begin{document}
+%-----------------------front matter
+\pagenumbering{roman}
+\title{A Framework for Spatial Explanations}
+\author{Anique Tahir}
+\degreeName{Master of Science}
+\defensemonth{April}
+\gradmonth{May}
+\gradyear{2018}
+\chair{Mohamed Sarwat, Chair \\ Sharon Hsiao\\ Ross Maciejewski}		
+\maketitle
+\doublespace
+\include{abstract}
+% \acknowledgementpage{}
+%\include{ack}
+\tableofcontents
+% This puts the word "Page" right justified above everything else.
+\addtocontents{toc}{~\hfill Page\par}
+% Asking LaTeX for a new page here guarantees that the LOF is on a separate page
+% after the TOC ends.
+\newpage
+% Making the LOT and LOF "parts" rather than chapters gets them indented at
+% level -1 according to the chart: top of page 4 of the document at
+% ftp://tug.ctan.org/pub/tex-archive/macros/latex/contrib/tocloft/tocloft.pdf
+
+% This gets the headers for the LOT right on the first page.  Subsequent pages
+% are handled by the fancyhdr code in the asudis.sty file.
+% \addcontentsline{toc}{part}{LIST OF TABLES}
+% \listoftables
+\addtocontents{lot}{Table~\hfill Page \par}
+\newpage
+\addcontentsline{toc}{part}{LIST OF FIGURES}
+\listoffigures
+\addtocontents{lof}{Figure~\hfill Page \par}
+\newpage
+% \addcontentsline{toc}{part}{LIST OF SYMBOLS}
+\clearpage
+% \symbolspage{}
+% \addcontentsline{toc}{part}{PREFACE}
+\clearpage
+\addtocontents{toc}{CHAPTER \par}					
+% \prefacepage{\\Enter content here.}
+
+% This gets the headers for the LOF right on the first page.  Subsequent pages
+% are handled by the fancyhdr code in the asudis.sty file.
+
+
+%-----------------------body
+\doublespace
+\pagenumbering{arabic}
+% \include{chapter0}
+\include{chapter1}
+\include{preliminaries}
+\include{chapter2}
+\include{chapter3}
+\include{chapter5}
+\include{chapterconclusion}
+%-----------------------back matter
+{\singlespace
+% Making the references a "part" rather than a chapter gets it indented at
+% level -1 according to the chart: top of page 4 of the document at
+% ftp://tug.ctan.org/pub/tex-archive/macros/latex/contrib/tocloft/tocloft.pdf
+\addcontentsline{toc}{part}{REFERENCES}
+\bibliographystyle{asudis}
+\bibliography{dis}}
+\renewcommand{\chaptername}{APPENDIX}
+\addtocontents{toc}{APPENDIX \par}
+\appendix
+% \include{appendix1}
+\include{vita}
+\end{document}
