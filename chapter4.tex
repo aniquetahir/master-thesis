@@ -385,3 +385,11 @@ In order for the users to easily form observations, our frontend provides them w
 The back end of the system is an Apache Spark application which calls the Spark daemon for requests of aggravation, intervention, and hierarchical intervention. I must be noted however that there are some operations that the backend performs which are not executed as Spark tasks, such as the creation of an R-Tree.
 
 To allow the front end to communicate with the backend, there is a middleware application. The job of the middleware is to take the input from the front end and execute our backend application with the appropriate function and input parameters. Our middleware is designed using Node js. It takes aggregate queries, selectivity range and number of explanations as input and sends it to the backend application. The results are then sent to the frontend. 
+
+Fig.~\ref{fig:interface} shows the front end of the web interface that we have designed for helping users find spatial explanations for their observations.
+
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{interface.png}
+\caption{The web interface for our explanation framework}
+\label{fig:interface}
+\end{figure}

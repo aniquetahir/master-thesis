@@ -1,4 +1,5 @@
-\chapter{Defining the System}
+\chapter{System Architecture}
+\label{chp:architecture}
 \section{Taxonomy}
 \label{sec:taxonomy}
 We define a taxonomy for observations and explanations. This taxonomy will help us standardize different approaches to explanation. It will also help us compare these approaches against each other. Our observation/explanation standard is based on the assumption that observations take the form of a query, whereas, explanations take the form of a predicate. Let $D$ be the dataset that we are interested in. Let $A_D$ be a set of attributes of $D$. Let $V_a$ represent the set of values for in $D$ for attribute $a$ where $\{\neg \emptyset,\emptyset\} \subset V_a$. Then we can define our candidate explanation $\phi$ as $$\phi \models \wedge_{i,j} {(i=j)}$$ where $i \in A_D, j \in V_i $
@@ -56,7 +57,7 @@ In the last two classes of our taxonomy, we only looked at non spatial observati
 Fig.~\ref{fig:spatial_spatial_vertical} shows an example of a spatial explanation for a spatial observation. The observation in this case is the average tip percentage when the pickup zone is LaGuardia airport. The candidate explanation displayed are also based on tip percentage, though they could have been any other attribute as well. Introducing a spatial predicate has a large observable impact on the explanation compared to the one in Section~\ref{sec:spatial_nonspatial}
 
 
-\section{Approaches}
+\section{Studied Approaches}
 \label{sec:approaches}
 There are three main approaches that we use in this thesis. Aggravation, Intervention and Salient Features. We also introduce hierarchical intervention. This approach is an extension of intervention which takes spatial clusters into account. Originally, Aggravation and Intervention were used in a non spatial context in related works\citep{chirigati2016data}. However, we extended these solutions to fit into our spatial taxonomy. 
 
@@ -115,13 +116,17 @@ Since intervention extends the idea presented by aggravation, it has similar iss
 $D' \leftarrow D \bowtie_{contains(P.polygon,(s,t))} P$. Spatial observations can now be defined as aggregate queries with a predicate containing $P.polygon$. Candidate spatial explanations can be defined as candidate explanations containing $P.polygon$ as emphasized in our taxonomy(Section~\ref{sec:taxonomy}). 
 
 \begin{figure}[ht]
-\includegraphics[width=\columnwidth]{spatial_aggravation_histogram.png}
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{spatial_aggravation_histogram.png}
+\end{center}
 \caption{Number of Zones against Degree of Spatial Aggravation}
 \label{fig:spatial_aggravation_histogram}
 \end{figure}
 
 \begin{figure}[ht]
-\includegraphics[width=\columnwidth]{spatial_intervention_histogram.png}
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{spatial_intervention_histogram.png}
+\end{center}
 \caption{Number of zones against their degree of Spatial Intervention}
 \label{fig:spatial_intervention_histogram}
 \end{figure}
@@ -141,3 +146,10 @@ Our extension of this approach for spatial explanation stems from the fact that 
 
 The value of relation ship score, $\tau$, can help us decide whether two attributes are co related. If the attributes are related, then their features can be represented as candidate explanations. Let $p$ be the set of positive relations in $F$. Let $n$ be the set of negative relations in $F$. Then,
 $\tau = \frac{|p|-|n|}{|F|}$
+
+
+Our system uses the salient features implementation by F. Chirigati et. al in their work on Data Polygamy framework. Calculating salient features consists of three main steps: Pre processing, aggregation, and indexing. Each step in this process is implemented as a map reduce operation. 
+
+In the preprocessing step, the spatial and temporal attributes of the dataset are used to select the data. The spatial and temporal attributes form the key in the mapreduce job while the average of our attributes form the value. In the aggregation step, the scalar functions are generated for the data. Each attribute in our dataset is represented by a different scalar function. Several scalar functions are calculated for each attribute for each spatio temporal resolution e.g. the spatio temporal resolution of hour and neighborhood has a different scalar function than the scalar function for day and zipcode. The next step consists of indexing the data. Indexing consists of creating a graph out of the aggregated data. Each node in the graph represents a point in the spatiotemporal domain. It may be convenient to think of this as a 2-D graph where one axis represents space and another represents time. A node is connected to another node if they are adjacent to each other in space(e.g. two neighborhoods next to each other) and time. The value if each node is the average attribute value. Due to the nature of the data, some points in the graph might be missing. The indexing step linearly interpolates the missing points in the graph. The 2-D scalar functions we calculated are finally used to calculate whether each node in our graph is a negative salient feature or positive salient feature.
+
+After the salient features are calculated we need to measure how well they explain the data. We do this by finding the relationship score between the observation scalar function and the scalar function for the remaining attributes in our dataset. The non spatial explanation consists of our threshold values while the spatial explanation consists of the polygons represented by the co-related salient features.

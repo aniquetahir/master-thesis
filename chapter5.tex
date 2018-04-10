@@ -1,13 +1,31 @@
 \chapter{Experiments/Evaluation}
+\label{chp:eval}
 \label{sec:evaluation}
 %Why we need evaluation\label{sec:relevance}
 
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{clustering_comparison}
+\caption{Comparison of Influence against number of clusters for K-Means, R-Tree and R*-Tree}
+\label{fig:clustering_comparison}
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{hieint_passenger_count}
+\caption{Comparison of Influence and Intensity against level of hierarchy with average passenger count as observation}
+\label{fig:hieint_passenger_count}
+\end{figure}
+
 The main contribution of this paper is to introduce a new approach for explanations(Hierarchical Intervention). We evaluate this new approach in a number of different ways. We perform qualitative evaluation and speed/scalability evaluation. 
+
+In order to compare the different clustering techniques that we use in hierarchical intervention we did a couple of experiments. Our solution relies on the fact that the higher the influence or intensity, the better the explanation. We used a number of observations on the NYC TLC data to see how each clustering technique fairs against the others. 
+
+\textbf{Experimental Setup}. In order to compare the different spatial partitioning techniques we set up an environment for experiments. Since the quality of the explanations do not depend on the speed and scale of the system, these experiments were performed on a single node machine with a i7 6400 3.5 GHz CPU and 8GB of RAM. The dataset used for this experiment was the NYC TLC data for January 2016. This data contains ~10 million trips.
+
+We found that R-Tree and R* Tree partitioning is usually more stable than K Means or Greedy Clustering. The stability of the clustering technique is referring to its monotonicity of the explanation as a function of the number of clusters. Fig.~\ref{fig:hieint_passenger_count} shows the influence against the number of clusters where the observation is the average passenger count. The influence and intensity are very sinusoidal. Fig.~\ref{fig:clustering_comparison} shows another observation and a plot of the influence for R-Tree and R*-Tree as well. The influence as a function of the number of clusters is a lot more monotonic here. Furthermore, R* Tree has higher influence on average compared to other approaches making it a lot more suitable for explanations.
+
 
 %Reasons for selecting evaluation criteria
 The qualitative evaluation that we define is based on K-Folds cross validation. The reason for selecting these evaluations is to measure how the top explanations provided by each approach fair as stand alone parts of data as well as their effects on the entire dataset as a whole. Other than qualitative analysis we look at the speed and scalability of each approach for performance evaluation.
-
-
 
 %How does each approach compare
 \textbf{Influence Comparison.}
@@ -24,12 +42,14 @@ In order to qualitatively assess the solutions, we use K-Folds cross validation\
 There is a reason for applying the explanation provided by the training data to the test data. The observation can be anything. The size of the training and test data is different depending on $k$. The observation can depend on the size of the data. This adds a bias when the explanation index for the training data is compared with the explanation index of the test data. Thus, we must apply the explanation provided by the training data on the test data and compare it with explanation when we apply the approach on the test data.
 
 \begin{figure}[h]
-\includegraphics[width=\columnwidth]{kfoldsevaluation}
+\includegraphics[width=\columnwidth]{kfolds.png}
 \caption{The result for k-folds evaluation shows good results when the approach is used in favor of influence(lower is better)}
 \label{fig:kfolds}
 \end{figure}
 
-We performed evaluation on the first 5 months of data from the NYC yellow cab dataset from 2016. The data spanned ~ 50 million trips. The $k$ for our evaluation was $5$. Each month represented a partition for k-folds evaluation. According to our analysis, we found that the approach works very well with low values of alpha. Fig.~\ref{fig:kfolds} shows some of the results of our evaluation for a number of observations. The lower the value of the relative distance the better the results.
+\textbf{Experimental Setup}. We performed evaluation on the first 5 months of data from the NYC yellow cab dataset from 2016. The data spanned ~ 50 million trips. The $k$ for our evaluation was $5$. Each month represented a partition for k-folds evaluation. According to our analysis, we found that the approach works very well with low values of alpha. Fig.~\ref{fig:kfolds} shows some of the results of our evaluation for a number of observations. The lower the value of the relative distance the better the results.
+
+The relative distance in the K Folds cross validation represents how much the explanation impact changes when we look at the explanations in the context of unseen data. A relative distance of zero represents that the explanation has the same impact on unseen data as if we had seen the data. A relative distance of one would represent that the top explanation for the unseen data has nothing in common with the explanation on seen data.
 
 \section{Precision and Recall}
 \begin{wrapfigure}{r}{0.5\textwidth}
@@ -125,13 +145,15 @@ $$Recall = 1$$
 \section{Speed and Scalability}
 \label{sec:speed}
 The speed of each approach is simply the time taken to calculate the explanations. The time varies depending on the size of the data. For performance evaluation, we used the NYC TLC data for 2016. The data is divided into months. As we increase the number of months to be processed, the time taken for each approach increases almost linearly for aggravation, intervention and hierarchical intervention. For salient features, the time increases slightly exponentially. The results of our evaluation are displayed in Fig.~\ref{fig:performance}
-% The speed of each approach is simply the time taken to calculate the explanations. Since all the approaches are implemented on top of distributed systems, the time varies depending on the number of nodes used. We experimented with calculating explanations for 1,3, and 5 nodes in a distributed environment. For the cluster we used Google Compute Engine nodes(1 vCPU, 3.5GB RAM). All the nodes in our cluster had the same specifications. The Aggravation, Intervention and Spatial Intervention were tested on Apache Spark running on YARN while the Salient Features were generated with the Data Polygamy Framework running on YARN. 
+
+\textbf{Experimental Setup}. The speed of each approach is simply the time taken to calculate the explanations. Since all the approaches are implemented on top of distributed systems, the time varies depending on the number of nodes used. We experimented with calculating explanations for 1,3, and 5 months in a distributed environment. For the cluster we used Google Compute Engine nodes(1 vCPU, 3.5GB RAM, 4 nodes). All the nodes in our cluster had the same specifications. The Aggravation, Intervention and Hierarchical Intervention were tested on Apache Spark running on YARN while the Salient Features were generated with the Data Polygamy Framework running on YARN. 
 \begin{figure}[h]
 \includegraphics[width=\columnwidth]{performance}
 \caption{Time taken by each approach as we increase the size of data}
 \label{fig:performance}
 \end{figure}
 
+The run times that were observed can be explained as follows. Aggravation takes the least amount of time of the compared approaches. Intervention costs more than aggravation because it includes the additional step of calculating statistics for the attributes as well as iterating the table. Hierarchical Intervention takes more time than aggravation but less time than intervention. This is because of several factors. One of the factors is that when we are using intervention and aggravation, we are using several attributes, on the other hand hierarchical intervention only uses the spatial attribute. On the other hand, we are creating a hierarchy. The in the case of this analysis we only used one query as the observation for the sake of comparison. However, multiple queries can affect the comparison as well. The time taken by Salient Features is also affected by a number of factors. First, the salient features implementation that we use is the one used in the Data Polygamy Framework \citep{chirigati2016data}. This approach uses the MapReduce framework. The other approaches use the Spark framework. Since Spark makes use of a execution plan which is more efficient than MapReduce, it is a factor in the slower runtime of the Salient Features approach. Thus, when comparing salient features to the other approaches, this can be considered something similar to black box testing. The most expensive computation step in salient features is the interpolation step which doesn't occur in the other approaches.
 
 
 % \begin{figure}[H]

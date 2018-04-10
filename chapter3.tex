@@ -1,12 +1,14 @@
-\chapter{Hierarchical Intervention}
+\chapter{Proposed Solution}
+\label{chp:proposed}
 \label{sec:hei_intervention}
 
 \section{Introduction}
 Hierarchical Intervention is an extension of the intervention approach. The idea behind hierarchical intervention is to improve our explanations by grouping together spatially colocated polygons in our candidate explanation. We divide the space into a set of levels. The first level contains the entire space as one cluster, while the last level contains each zone or each point in each cluster. 
 
+\section{Spatial Partitioning/Clustering}
 There are several approaches to cluster data. Each clustering approach has a large impact on the resulting explanations. In order to understand the issues with explanations using spatial clustering, we need to have an understanding of the clustering approaches.
 
-\section{R-Tree}
+\subsection{R-Tree}
 An R-Tree is a data structure which is commonly used for spatial data indexing. The idea behind the R-Tree is similar to the idea behind a binary tree i.e. It is faster to query data if it is stored in the form of a hierarchy\citep{guttman1984r}. In an R Tree this hierarchy exists in the form of Minimum Bounding Rectangles(MBR).
 
 \begin{figure}[ht]
@@ -25,14 +27,15 @@ When elements from an R-Tree are deleted, the parent nodes are also taken into c
 Finally the main purpose of constructing an R-Tree is to optimize search speed. If the branching factor of the R-Tree is $\lambda$ and there are $n$ elements that are indexed, then the search cost of the R-Tree is $\log_{\lambda}{n}$ assuming that the tree is balanced. 
 
 
-\section{R*-Tree}
+\subsection{R*-Tree}
 R* Tree is a variation of R-Tree\citep{beckmann1990r}. The objective of an R*-Tree is to minimize overlaps and coverage in an R-Tree. It also optimizes for margin and area. The idea behind R*-Tree which helps in achieving its objective is to use the perimeter of the MBR as a heuristic when splitting and creating R-Trees. 
 
 Unlike R-Trees the insert operation of an R* Tree also incorporates deletion. When an element is added to an R-Tree, an existing MBR is either extended or split. However, ordering of the insertion in an R-Tree deforms existing MBRs and may lead to more coverage. R* Tree solves this problem by removing elements from nodes and reinserting them. Splitting of MBRs is also based on perimeter. There are multiple ways to split an MBR but if its split based on least resulting perimeter as a heuristic, it leads to better partitioning which leads to less overlaps.
 
 The search and delete operations of an R* Tree are the same as an R Tree.
 
-\section{K-means clustering/Voronoi partitioning}
+\subsection{K-means clustering/Voronoi partitioning}
+K means clustering is an algorithm designed to cluster a group of points. As the name suggests, the user decides the number of clusters that he/she wants. $K$ represents the number of clusters. The algorithm randomly selects $k$ seed points. The seed points can also be selected using a heuristic to improve the clustering. The points closest to each of the seed points form clusters. The k means algorithm is iterative. Which means it doesn't end there. The centroids of the clusters are used as new seed points and the process is repeated until the centroids are constant. Algorithm~\ref{alg:kmeans} shows our version of the kmeans algorithm where the selectivity is used as a metric for judging the clusters.
 
 % TODO Add reference to greedy hierarchical clustering
 % Let $D$ be our spatial dataset. Let $P$ be a set of distinct polygons over our dataset $D$. We define a set of distinct clusters of polygons $P_h$. The polygons can be clustered in many different ways but we used greedy hierarchical clustering because of its speed and relevance to the problem. Let $C$ be the set of centroids in $P$ i.e. $\forall p_i \in P$, $c_i$ is the centroid for $p_i$, where $c_i \in C$. We define a set of $n$ levels, $L = \{l_1, l_2,...,l_n\}$. We represent each centroid in $C$ on a cartesian plane where $x_i$ is the first dimension of the centroid $c_i$ and $y_i$ is the second dimension of the centroid $c_i$. Let $x_{min}$, $x_{max}$ be the minimum and maximum value for $x_i$ respectively. Let $y_{min}$, $y_{max}$ be the minimum and maximum values of $y_i$ respectively. There is a radius associated with each level in $L$. Let $r_i$ be the radius for level $l_i$ in $L$, We can define $r_i$ in general as,
@@ -41,7 +44,7 @@ The search and delete operations of an R* Tree are the same as an R Tree.
 % The set of clusters,$G_i$, for level $l_i$ can be defined as $G_i=\{p_k|(x_k^2 + y_k^2 < r_i^2)\}\forall p_k \in P$. Any possible set cover of $P$ in $G_i$ can now be considered for inclusion in $P_h$. One implementation of this approach is covered in Section~\ref{sec:hie_impl}
 
 
-\section{Hierarchical Greedy Clustering}
+\subsection{Hierarchical Greedy Clustering}
 Hierarchical Greedy Clustering is a popular algorithm in data visualizations because of its speed. The idea behind this algorithm is to randomly select points and create clusters around them.
 
 Let $D$ be our spatial dataset. Let $P$ be a set of distinct polygons over our dataset $D$. We define a set of distinct clusters of polygons $P_h$. Let $C$ be the set of centroids in $P$ i.e. $\forall p_i \in P$, $c_i$ is the centroid for $p_i$, where $c_i \in C$. We define a set of $n$ levels, $L = \{l_1, l_2,...,l_n\}$. We represent each centroid in $C$ on a Cartesian plane where $x_i$ is the first dimension of the centroid $c_i$ and $y_i$ is the second dimension of the centroid $c_i$. Let $x_{min}$, $x_{max}$ be the minimum and maximum value for $x_i$ respectively. Let $y_{min}$, $y_{max}$ be the minimum and maximum values of $y_i$ respectively. There is a radius associated with each level in $L$. Let $r_i$ be the radius for level $l_i$ in $L$, We can define $r_i$ in general as,
@@ -49,7 +52,7 @@ $$r_i = \frac{\sqrt{(y_{max}-y_{min})^2+(x_{max}-x_{min})^2}}{2^{i-1}}$$
 
 The set of clusters,$G_i$, for level $l_i$ can be defined as $G_i=\{p_k|(x_k^2 + y_k^2 < r_i^2)\}\forall p_k \in P$. The algorithm for the implementation of this approach is covered in Section~\ref{sec:hie_impl}. 
 
-Greedy Hierarchical Clustering turned out to have a major flaw. It selects seed points randomly. This means that in each level, the clusters can be highly imbalanced. We compared this approach to K means(Voronoi partitioning)\citep{hartigan1979algorithm,aurenhammer2000voronoi}, R Tree\citep{guttman1984r} and R* Tree\citep{beckmann1990r}. 
+Greedy Hierarchical Clustering turned out to have a drawback when we use it for explanations. It selects seed points randomly. This means that in each level, the clusters can be highly imbalanced. We compared this approach to K means(Voronoi partitioning)\citep{hartigan1979algorithm,aurenhammer2000voronoi}, R Tree\citep{guttman1984r} and R* Tree\citep{beckmann1990r}. 
 
 The main idea behind the hierarchical intervention approach, regardless of the partitioning algorithm, is to help us in increasing the domain for our degree of explanation. Since, intervention is a subset of this approach the domain is at least as large as that for intervention.
 
@@ -91,7 +94,7 @@ Explanations given by Hierarchical Intervention can be ranked on the basis of th
 \label{sec:implementation}
 We created an implementation of the our system as a proof of concept. Our system uses a web based GUI for the visualizations while the backend processing is done using Spark\citep{shanahan2015large}. We borrowed from the MapReduce implementation of Salient Features from the Data Polygamy Framework\citep{chirigati2016data}. There are three main stages in our system pipeline: Preprocessing, User Input and Explanation Visualization. The preprocessing stage is different for each approach to explanation. The user input stage can be divided into two further parts: The user observation, and the type of explanation the user is interested in. An example of the explanation approach would be intervention. The user observation can be one of the attributes the user wants to observe e.g. a mathematical expression spanning several aggregate queries.
 
-\subsection{Aggravation}
+
 \label{aggravation_impl}
 The aggravation approach that we use makes several optimizations to the naive approach one may come up with. A naive approach may consider each candidate explanation and calculate the degree of explanation by aggravation for each one. However, using such an approach would take a long time. If the attribute which we are looking into for explanation has $m$ possible values, it would take $O(m)$ queries to come up with top explanations. If we have $r$ rows in our dataset and each observation query has a linear time complexity, our total time complexity would be $O(rm)$. We can reduce the time complexity by a large factor if we make each candidate explanation cover a larger range of the dataset. 
 
@@ -104,7 +107,7 @@ Since we bucketed our data, the number of candidate explanations have been reduc
 %Talk about zoning
 Another component of our system is spatial data. Our system is designed to handle spatial observations and explanations. When given a spatial observation, our system filters out the data with the spatial predicate given in the observation. The remaining data is used just like any other explanation task. Spatial Explanations, on the other hand, require a bit more work. Given a set of polygons, doing a spatial join with the data is a very expensive process. Our system performs a spatial join once and assigns each tuple an ID based on which polygon it belongs to. The ID can now be used like a regular attribute for explanation.
 
-\subsection{Intervention}
+
 \label{intervention_impl}
 
 %Talk about grouping
@@ -114,6 +117,8 @@ Intervention is another approach that our system uses. Some of the work we did t
 \subsection{Hierarchical Intervention}
 \label{sec:hie_impl}
 Hierarchical intervention is an improvement on top of the intervention approach. The main idea behind hierarchical intervention is to group spatially colocated points/polygons together in an attempt to improve explanations. We use a partitioning algorithm to create clusters. The base case of our algorithm consists of clusters with a single node each. This makes the results of intervention a subset of the results of hierarchical clustering. Algorithm~\ref{alg:hie} highlights the algorithm that we used for our implementation of greedy hierarchical clustering. Note that each level in the hierarchy is a set cover of all the nodes. 
+
+Greedy Hierarchical Clustering is an iterative algorithm. The base case(Algorithm.~\ref{alg:hie};27) is when we reach the lowest level in the hierarchy where we have individual points or zones. We start off with the highest level in the hierarchy(Algorithm.~\ref{alg:hie};4). We select random points and form clusters around them(Algorithm.~\ref{alg:hie};16). In the following iteration we reduce the size of the cluster by a constant factor(Algorithm.~\ref{alg:hie};8) and repeat until we reach the base case.
 
 
 % Talk about clustering
@@ -279,11 +284,7 @@ Hierarchical intervention is an improvement on top of the intervention approach.
 % \end{lstlisting}
 
 While greedy hierarchical clustering helps in increasing the domain for the degree of explanation by intervention, the random selection of seed points makes the rate of change of influence and intensity(Section~\ref{sec:extending_hi}) over the levels of hierarchy very volatile. Our point is illustrated by fig.~\ref{fig:hieint_passenger_count}. The red line represents influence while the blue line represents intensity. One would expect the curves to be logarithmic. However, they more closely resemble a sinusoidal function.
-\begin{figure}[h]
-\includegraphics[width=\columnwidth]{hieint_passenger_count}
-\caption{Comparison of Influence and Intensity against level of hierarchy with average passenger count as observation}
-\label{fig:hieint_passenger_count}
-\end{figure}
+
 
 In order to try to counter this problem, we used k means clustering. Algorithm~\ref{alg:kmeans} highlights our implementation of k-means clustering centered around our problem. The algorithm is designed to find the clusters based on a heuristic of giving more preference to balanced clusters i.e. each cluster has similar number of points.
 
@@ -383,7 +384,7 @@ In order to try to counter this problem, we used k means clustering. Algorithm~\
       \State {$random\_point \gets$} random point from $points$
     \EndWhile
     \State $selected\_points \gets selected\_points \cup random\_point$
-    \State $centroids \gets random\_point \cup random\_point$
+    \State $centroids \gets centroids \cup random\_point$
     \State $i \gets i+1$
     \EndFor
 
@@ -410,7 +411,7 @@ In order to try to counter this problem, we used k means clustering. Algorithm~\
         \State $closest\_point \gets nil$
 
         \For{$point \gets cluster$}
-          \If{$closest\_point = nil \vee$ distance of $point$ from $avg\_point$ < distance from $closest\_point$}
+          \If{$closest\_point = nil \vee$ distance of $point$ from $avg\_point$ $<$ distance from $closest\_point$}
             \State $closest\_point \gets point$
           \EndIf
         \EndFor
@@ -609,21 +610,38 @@ In order to try to counter this problem, we used k means clustering. Algorithm~\
 % }
 % \end{lstlisting}
 
-\begin{figure}[h]
-\includegraphics[width=\columnwidth]{clustering_comparison}
-\caption{Comparison of Influence against number of clusters for K-Means, R-Tree and R*-Tree}
-\label{fig:clustering_comparison}
-\end{figure}
+
+
+Our algorithm for K-Means clustering is designed to handle data which is divided into groups of zones. The results of K-means clustering are dependent on the choice of seed tuples. In our algorithm, we allow a number of iterations of clustering to allow the best selection of seed tuples based on selectivity(Algorithm.~\ref{alg:kmeans}; 9). For each run, we select $k$ seed tuples randomly. The Euclidean distance of each tuple in our dataset from the seed tuples is used to determine which cluster the tuple belongs to. When we have data divided into zones, each zone can represent a variable number of tuples. The centroid when considering each zone as a single entity is different from a centroid where a weight is assigned to each zone. Our algorithm takes this into account and calculates the centroid as an average based on the selectivity of each tuple in the cluster(Algorithm.~\ref{alg:kmeans}; 80). For each iteration we select new seed points as the tuples closest to the calculated centroids(Algorithm.~\ref{alg:kmeans}; 95). This process is repeated several times. The heuristic that we use to select the best seed tuples is mentioned in $GetKMeansDistance$ procedure of our algorithm(Algorithm.~\ref{alg:kmeans}; 19). The idea behind the heuristic is that a good clustering would have a small absolute difference between the selectivity of its clusters.
 
 K-Means clustering gives a much better result than greedy hierarchical clustering for our problem. However, we also used other spatial partitioning approaches like R-Tree and R*-Tree for comparison. R*-Tree appears to be the partitioning algorithm which gives us the best results according to our experiments. Fig.~\ref{fig:clustering_comparison} shows the comparison between K-Means, R-Tree and R*-Tree.
 
 % Talk about generating statistics to save time
 Once we have our hierarchy set up, we still have to use it to find an explanation. If we had $n$ nodes, the number of clusters we have for our hierarchy is $n \log n$.  This increases the number of combinations for explanations significantly. However, we can use some optimizations to save us some time complexity. Our approach uses memoization of explanations for each spatial node to calculate the value of the degree of explanation. We first calculate the statistics for each node individually and then subtract it from the statistics for the attribute we are observing. For example, let us consider a cluster, $c$, containing two spatial nodes $a$ and $b$. We are interested in the average tip percentage for taxi trips. The degree of candidate explanation by intervention would be the average tip percentage when we remove $a$ and $b$ from our dataset. Our system would memoize the values for the sum and count of tip percentage for $a$, $b$ as $sum_a$, $count_a$, $sum_b$ and $count_b$. It will also calculate the sum and count for tip percentage for the entire dataset. When we need our system to find the degree of explanation for cluster $c$. The formula for average is simply $\frac{sum}{count}$. Since our system calculated all the stats in one query, it does not need to perform additional queries to find the degree. It can simply use $\frac{sum-sum_a-sum_b}{count-count_a-count_b}$ to calculate the average for intervention.
 
-\subsection{Salient Features}
-Our system uses the salient features implementation by F. Chirigati et. al in their work on Data Polygamy framework. Calculating salient features consists of three main steps: Pre processing, aggregation, and indexing. Each step in this process is implemented as a map reduce operation. 
 
-In the preprocessing step, the spatial and temporal attributes of the dataset are used to select the data. The spatial and temporal attributes form the key in the mapreduce job while the average of our attributes form the value. In the aggregation step, the scalar functions are generated for the data. Each attribute in our dataset is represented by a different scalar function. Several scalar functions are calculated for each attribute for each spatio temporal resolution e.g. the spatio temporal resolution of hour and neighborhood has a different scalar function than the scalar function for day and zipcode. The next step consists of indexing the data. Indexing consists of creating a graph out of the aggregated data. Each node in the graph represents a point in the spatiotemporal domain. It may be convenient to think of this as a 2-D graph where one axis represents space and another represents time. A node is connected to another node if they are adjacent to each other in space(e.g. two neighborhoods next to each other) and time. The value if each node is the average attribute value. Due to the nature of the data, some points in the graph might be missing. The indexing step linearly interpolates the missing points in the graph. The 2-D scalar functions we calculated are finally used to calculate whether each node in our graph is a negative salient feature or positive salient feature.
+\section{Interface}
 
-After the salient features are calculated we need to measure how well they explain the data. We do this by finding the relationship score between the observation scalar function and the scalar function for the remaining attributes in our dataset. The non spatial explanation consists of our threshold values while the spatial explanation consists of the polygons represented by the co-related salient features.
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{framework}
+\caption{An outline for our system framework}
+\label{fig:framework}
+\end{figure}
+
+We created an interface for the system that we have proposed. This interface is web based. It consists of a backend server and a front end for visualizations. The Backend is responsible for querying the Apache Spark daemon with relevant queries. The front end allows the user to define observations and visualize explanations. The front end interface makes use of Mapbox to display the map, Deck.gl to create a visualization overlay on the map. The overlay can be points or polygons. In order to handle state changes in the front end, we used React.js front end library. We also show histograms related to the data. For displaying these histograms, Baidu eCharts library was used. Since the front end was programmed in ES6, webpack was used for transpilation\citep{webpack}. Fig.~\ref{fig:framework} shows us a flow diagram for our system.
+
+In order for the users to easily form observations, our frontend provides them with a series of histograms. Each bar on a histogram represents an aggregate query. Instead of manually writing queries, the user can easily use the bars in the histograms to be used as variables. These variables can then be used in an arithmetic expression representing the users observations. The user can also define custom variables in the form of aggregate SQL queries manually using the interface.
+
+The back end of the system is an Apache Spark application which calls the Spark daemon for requests of aggravation, intervention, and hierarchical intervention. I must be noted however that there are some operations that the backend performs which are not executed as Spark tasks, such as the creation of an R-Tree. The framework that we have designed requires us to parse and alter queries at multiple points in the pipeline. In order to avoid redesigning the wheel we use the parser implementation provided by PrestoDB\citep{prestodb}.
+
+To allow the front end to communicate with the backend, there is a middleware application. The job of the middleware is to take the input from the front end and execute our backend application with the appropriate function and input parameters. Our middleware is designed using Node js\citep{tilkov2010node,cantelon2017node}. It takes aggregate queries, selectivity range and number of explanations as input and sends it to the backend application. The results are then sent to the frontend. 
+
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{interface.png}
+\caption{The web interface for our solution}
+\label{fig:interface}
+\end{figure}
+
+Fig.~\ref{fig:interface} shows the interface that we have created for our solution. The users may add variables from the histograms or they may add them from their own sql queries. The interface allows the user to filter by attribute before viewing the histograms.
+
 

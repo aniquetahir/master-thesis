@@ -1,2 +1,10 @@
 \chapter{Conclusion}
-We looked at different approaches for spatial explanations for arbitrary observations. We found that Hierarchical Intervention is a great way to explain spatial data as it outperforms other approaches in most of the evaluation metrics. Our system is designed to 
+\label{chp:concl}
+We looked at different approaches for spatial explanations for arbitrary observations. We built Hierarchical Intervention on top of aggravation and intervention approaches. According to our evaluation, our approach outperforms aggravation and intervention in precision while it outperforms aggravation in recall.
+
+\section{Future Work}
+There are a number of improvements that can be made on top of our proposed approach that we weren't able to implement due to the lack of time or availability of datasets with the ground truth. One interesting idea is to use influence and intensity as parameters of perceptrons in a neural network\citep{grossberg1988nonlinear,widrow199030}. The neural network can be trained to explain specific datasets by using ground truth. 
+Many spatial datasets that we find also have a temporal component. Our system does not handle the temporal aspect of the data. An improvement that can be made to our approach is to use time range as a secondary component of our candidate explanations. We can build a temporal hierarchy in the same way we build a spatial hierarchy. The spatio-temporal hierarchy can be represented as a pyramid instead of a tree.
+If we extend our idea of spatio temporal system to a neural network, we can think of it from the perspective of a recurrent neural network\citep{chung2016hierarchical}. It might also help to use Long Short Term Memory(LSTM) model to encapsulate the value of explanations at levels of the hierarchy which are far apart \citep{hochreiter1997long}.
+Since influence and intensity are expensive operations, the time complexity of the network should also be taken into account and heuristics should be used where necessary when using approaches with a lot of inputs.
+
