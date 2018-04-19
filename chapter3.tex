@@ -1,9 +1,9 @@
-\chapter{Proposed Solution}
+\chapter{Spatial Explanations using Hierarchical Intervention}
 \label{chp:proposed}
 \label{sec:hei_intervention}
 
 \section{Introduction}
-Hierarchical Intervention is an extension of the intervention approach. The idea behind hierarchical intervention is to improve our explanations by grouping together spatially colocated polygons in our candidate explanation. We divide the space into a set of levels. The first level contains the entire space as one cluster, while the last level contains each zone or each point in each cluster. 
+Hierarchical Intervention is an extension of the intervention approach. The idea behind hierarchical intervention is to improve our explanations by grouping together spatially colocated polygons in our candidate explanation. We divide the space into a set of levels. The first level contains the entire space as one cluster, while the last level contains each zone or each point in each cluster.
 
 \section{Spatial Partitioning/Clustering}
 There are several approaches to cluster data. Each clustering approach has a large impact on the resulting explanations. In order to understand the issues with explanations using spatial clustering, we need to have an understanding of the clustering approaches.
@@ -17,18 +17,18 @@ An R-Tree is a data structure which is commonly used for spatial data indexing. 
 \label{fig:rtree}
 \end{figure}
 
-The top level of an R Tree consists of a set of MBRs which cover a large spatial area. Each MBR can now be subdivided into further MBRs which makes up the second level of the tree and so forth. At the leaf nodes of the tree, each node consists of a single object in our underlying data. 
+The top level of an R Tree consists of a set of MBRs which cover a large spatial area. Each MBR can now be subdivided into further MBRs which makes up the second level of the tree and so forth. At the leaf nodes of the tree, each node consists of a single object in our underlying data.
 
-There are three main considerations when building an R Tree: insertion, deletion, and search. In order to insert data, it is important to consider that the tree is balanced. A balanced tree results in faster search since the depth of the tree is reduced. The same thing needs to be taken into consideration with deletion. 
+There are three main considerations when building an R Tree: insertion, deletion, and search. In order to insert data, it is important to consider that the tree is balanced. A balanced tree results in faster search since the depth of the tree is reduced. The same thing needs to be taken into consideration with deletion.
 In order to insert an element, a heuristic is usually involved. The main objective when inserting into an R-Tree is to minimize the splitting and enlargement. If an element can be inserted into an existing MBR, then it is preferred. Otherwise, existing MBR's are either split or enlarged.
 
 When elements from an R-Tree are deleted, the parent nodes are also taken into consideration. This is because deleting elements may result in a change in the parent MBR as well unlike a B-Tree. An R-Tree maintains a minimum utilization constant into consideration when deleting. If a node in the R-Tree is below the minimum utilization, the elements are reinserted.
 
-Finally the main purpose of constructing an R-Tree is to optimize search speed. If the branching factor of the R-Tree is $\lambda$ and there are $n$ elements that are indexed, then the search cost of the R-Tree is $\log_{\lambda}{n}$ assuming that the tree is balanced. 
+Finally the main purpose of constructing an R-Tree is to optimize search speed. If the branching factor of the R-Tree is $\lambda$ and there are $n$ elements that are indexed, then the search cost of the R-Tree is $\log_{\lambda}{n}$ assuming that the tree is balanced.
 
 
 \subsection{R*-Tree}
-R* Tree is a variation of R-Tree\citep{beckmann1990r}. The objective of an R*-Tree is to minimize overlaps and coverage in an R-Tree. It also optimizes for margin and area. The idea behind R*-Tree which helps in achieving its objective is to use the perimeter of the MBR as a heuristic when splitting and creating R-Trees. 
+R* Tree is a variation of R-Tree\citep{beckmann1990r}. The objective of an R*-Tree is to minimize overlaps and coverage in an R-Tree. It also optimizes for margin and area. The idea behind R*-Tree which helps in achieving its objective is to use the perimeter of the MBR as a heuristic when splitting and creating R-Trees.
 
 Unlike R-Trees the insert operation of an R* Tree also incorporates deletion. When an element is added to an R-Tree, an existing MBR is either extended or split. However, ordering of the insertion in an R-Tree deforms existing MBRs and may lead to more coverage. R* Tree solves this problem by removing elements from nodes and reinserting them. Splitting of MBRs is also based on perimeter. There are multiple ways to split an MBR but if its split based on least resulting perimeter as a heuristic, it leads to better partitioning which leads to less overlaps.
 
@@ -50,9 +50,9 @@ Hierarchical Greedy Clustering is a popular algorithm in data visualizations bec
 Let $D$ be our spatial dataset. Let $P$ be a set of distinct polygons over our dataset $D$. We define a set of distinct clusters of polygons $P_h$. Let $C$ be the set of centroids in $P$ i.e. $\forall p_i \in P$, $c_i$ is the centroid for $p_i$, where $c_i \in C$. We define a set of $n$ levels, $L = \{l_1, l_2,...,l_n\}$. We represent each centroid in $C$ on a Cartesian plane where $x_i$ is the first dimension of the centroid $c_i$ and $y_i$ is the second dimension of the centroid $c_i$. Let $x_{min}$, $x_{max}$ be the minimum and maximum value for $x_i$ respectively. Let $y_{min}$, $y_{max}$ be the minimum and maximum values of $y_i$ respectively. There is a radius associated with each level in $L$. Let $r_i$ be the radius for level $l_i$ in $L$, We can define $r_i$ in general as,
 $$r_i = \frac{\sqrt{(y_{max}-y_{min})^2+(x_{max}-x_{min})^2}}{2^{i-1}}$$
 
-The set of clusters,$G_i$, for level $l_i$ can be defined as $G_i=\{p_k|(x_k^2 + y_k^2 < r_i^2)\}\forall p_k \in P$. The algorithm for the implementation of this approach is covered in Section~\ref{sec:hie_impl}. 
+The set of clusters,$G_i$, for level $l_i$ can be defined as $G_i=\{p_k|(x_k^2 + y_k^2 < r_i^2)\}\forall p_k \in P$. The algorithm for the implementation of this approach is covered in Section~\ref{sec:hie_impl}.
 
-Greedy Hierarchical Clustering turned out to have a drawback when we use it for explanations. It selects seed points randomly. This means that in each level, the clusters can be highly imbalanced. We compared this approach to K means(Voronoi partitioning)\citep{hartigan1979algorithm,aurenhammer2000voronoi}, R Tree\citep{guttman1984r} and R* Tree\citep{beckmann1990r}. 
+Greedy Hierarchical Clustering turned out to have a drawback when we use it for explanations. It selects seed points randomly. This means that in each level, the clusters can be highly imbalanced. We compared this approach to K means(Voronoi partitioning)\citep{hartigan1979algorithm,aurenhammer2000voronoi}, R Tree\citep{guttman1984r} and R* Tree\citep{beckmann1990r}.
 
 The main idea behind the hierarchical intervention approach, regardless of the partitioning algorithm, is to help us in increasing the domain for our degree of explanation. Since, intervention is a subset of this approach the domain is at least as large as that for intervention.
 
@@ -66,7 +66,7 @@ In order to get the most out of Hierarchical Intervention, we introduce two new 
 \label{sec:intensity}
 
 %What is relevance
-We define intensity as a metric which measures the standalone value of the explanation. The relevance metric borrows a lot from our definition of aggravation. It might be convenient to think of a web search engine when we are looking at the intensity metric. When we use a search engine, we provide a search term as a query. The search engine looks at all the pages in its database and returns the results in order of relevance. The top results in the search engine may not have a significant effect on the entire web if they were to be removed. However, the top result in the search engine has the highest relation to the data. For example, the top result for a search engine which uses tf-idf might be a page containing the highest frequency of the search term\citep{robertson2004understanding}. 
+We define intensity as a metric which measures the standalone value of the explanation. The relevance metric borrows a lot from our definition of aggravation. It might be convenient to think of a web search engine when we are looking at the intensity metric. When we use a search engine, we provide a search term as a query. The search engine looks at all the pages in its database and returns the results in order of relevance. The top results in the search engine may not have a significant effect on the entire web if they were to be removed. However, the top result in the search engine has the highest relation to the data. For example, the top result for a search engine which uses tf-idf might be a page containing the highest frequency of the search term\citep{robertson2004understanding}.
 
 %Formal definition of relevance
 Let $D$ be our dataset. Let $\phi$ be our candidate explanation. Let $R$ be the function which maps our dataset to the value of our observation. Then we can define intensity as,
@@ -83,7 +83,7 @@ $$influence = |R(\sigma(D)) - R(\sigma_{\neg \phi} (D)) |$$
 
 The greater the value of influence, the more its impact on the observation.
 
-Our evaluation metrics suggest that influence and intensity explain data in different ways. Explanations with higher influence tend to give predicates which cover a larger area while explanations with higher intensity tend to give predicates which cover a small area. We can balance out these two metrics according to the preferences of the observer. We define the \textit{explanation index}, $\epsilon$ as: 
+Our evaluation metrics suggest that influence and intensity explain data in different ways. Explanations with higher influence tend to give predicates which cover a larger area while explanations with higher intensity tend to give predicates which cover a small area. We can balance out these two metrics according to the preferences of the observer. We define the \textit{explanation index}, $\epsilon$ as:
 $$\epsilon = \alpha \times influence + (1-\alpha) \times intensity$$
 $\alpha$ is the \textit{explanation coefficient}. It is a variable whose value is decided by the user.
 
@@ -96,10 +96,10 @@ We created an implementation of the our system as a proof of concept. Our system
 
 
 \label{aggravation_impl}
-The aggravation approach that we use makes several optimizations to the naive approach one may come up with. A naive approach may consider each candidate explanation and calculate the degree of explanation by aggravation for each one. However, using such an approach would take a long time. If the attribute which we are looking into for explanation has $m$ possible values, it would take $O(m)$ queries to come up with top explanations. If we have $r$ rows in our dataset and each observation query has a linear time complexity, our total time complexity would be $O(rm)$. We can reduce the time complexity by a large factor if we make each candidate explanation cover a larger range of the dataset. 
+The aggravation approach that we use makes several optimizations to the naive approach one may come up with. A naive approach may consider each candidate explanation and calculate the degree of explanation by aggravation for each one. However, using such an approach would take a long time. If the attribute which we are looking into for explanation has $m$ possible values, it would take $O(m)$ queries to come up with top explanations. If we have $r$ rows in our dataset and each observation query has a linear time complexity, our total time complexity would be $O(rm)$. We can reduce the time complexity by a large factor if we make each candidate explanation cover a larger range of the dataset.
 
 %Talk about bucketing
-As mentioned in Section~\ref{sec:aggravation}, we use bucketing to reduce the number of permutations. We use the standard deviation, $\sigma$, of each attribute to separate values which are near the average from the others. We can get the minimum and standard deviation of each attribute over a single iteration of our table in $O(r)$ time. Since the bucket for each value of the attribute can be calculated in constant time, we create a new table containing the bucket value of the attribute in $O(r)$ time. 
+As mentioned in Section~\ref{sec:aggravation}, we use bucketing to reduce the number of permutations. We use the standard deviation, $\sigma$, of each attribute to separate values which are near the average from the others. We can get the minimum and standard deviation of each attribute over a single iteration of our table in $O(r)$ time. Since the bucket for each value of the attribute can be calculated in constant time, we create a new table containing the bucket value of the attribute in $O(r)$ time.
 
 %Talk about grouping
 Since we bucketed our data, the number of candidate explanations have been reduced to $O(\big(\frac{m}{\sigma}\big))$. However, there is still room for improvement. Our observation is always an aggregate query. If we group on the explanation attributes, we can still get all of the corresponding values of the observation in one iteration of the data, making our time complexity $O(r)$.
@@ -116,7 +116,7 @@ Intervention is another approach that our system uses. Some of the work we did t
 
 \subsection{Hierarchical Intervention}
 \label{sec:hie_impl}
-Hierarchical intervention is an improvement on top of the intervention approach. The main idea behind hierarchical intervention is to group spatially colocated points/polygons together in an attempt to improve explanations. We use a partitioning algorithm to create clusters. The base case of our algorithm consists of clusters with a single node each. This makes the results of intervention a subset of the results of hierarchical clustering. Algorithm~\ref{alg:hie} highlights the algorithm that we used for our implementation of greedy hierarchical clustering. Note that each level in the hierarchy is a set cover of all the nodes. 
+Hierarchical intervention is an improvement on top of the intervention approach. The main idea behind hierarchical intervention is to group spatially colocated points/polygons together in an attempt to improve explanations. We use a partitioning algorithm to create clusters. The base case of our algorithm consists of clusters with a single node each. This makes the results of intervention a subset of the results of hierarchical clustering. Algorithm~\ref{alg:hie} highlights the algorithm that we used for our implementation of greedy hierarchical clustering. Note that each level in the hierarchy is a set cover of all the nodes.
 
 Greedy Hierarchical Clustering is an iterative algorithm. The base case(Algorithm.~\ref{alg:hie};27) is when we reach the lowest level in the hierarchy where we have individual points or zones. We start off with the highest level in the hierarchy(Algorithm.~\ref{alg:hie};4). We select random points and form clusters around them(Algorithm.~\ref{alg:hie};16). In the following iteration we reduce the size of the cluster by a constant factor(Algorithm.~\ref{alg:hie};8) and repeat until we reach the base case.
 
@@ -161,8 +161,8 @@ Greedy Hierarchical Clustering is an iterative algorithm. The base case(Algorith
         \algstore{myalg}
     \end{algorithmic}
     \end{algorithm}
-    \begin{algorithm}                     
-    \begin{algorithmic} [1]              
+    \begin{algorithm}
+    \begin{algorithmic} [1]
     \algrestore{myalg}
       	\State $hierarchy\_of\_clusters \gets hierarchy\_of\_clusters \cup \{level,hierarchy\}$
 
@@ -240,7 +240,7 @@ Greedy Hierarchical Clustering is an iterative algorithm. The base case(Algorith
 
 %     // Initialize hierarchy
 %     ArrayList<List<Integer>> heirarchy = new ArrayList<>();
-    
+
 %     // Initialize a list containing all the points that are not in any cluster
 %     ArrayList<Integer> unusedPoints = new ArrayList<>();
 %     for(Integer objectId: shapemap.keySet()){
@@ -263,7 +263,7 @@ Greedy Hierarchical Clustering is an iterative algorithm. The base case(Algorith
 %             Point shapeCenter = shapemap.get(objectId).getCentroid();
 %             if(shapeCenter.distance(centroid)<levelRadius){
 %                 cluster.add(objectId);
-%                 unusedIter.remove(); 
+%                 unusedIter.remove();
 %             }
 %         }
 
@@ -289,7 +289,7 @@ While greedy hierarchical clustering helps in increasing the domain for the degr
 In order to try to counter this problem, we used k means clustering. Algorithm~\ref{alg:kmeans} highlights our implementation of k-means clustering centered around our problem. The algorithm is designed to find the clusters based on a heuristic of giving more preference to balanced clusters i.e. each cluster has similar number of points.
 
 \begin{algorithm}
-\caption{Algorithm for K means}\label{alg:kmeans}
+\caption{Explanation Aware K means}\label{alg:kmeans}
 \begin{algorithmic}[1]
 \Procedure{Cluster}{$points, k, number\_of\_runs$}
     \State $cluster\_possibilities \gets \emptyset$
@@ -323,8 +323,8 @@ In order to try to counter this problem, we used k means clustering. Algorithm~\
     \algstore{kmeansalg1}
     \end{algorithmic}
     \end{algorithm}
-    \begin{algorithm}                     
-    \begin{algorithmic} [1]              
+    \begin{algorithm}
+    \begin{algorithmic} [1]
     \algrestore{kmeansalg1}
       \State $cluster\_weight \gets GetClusterWeight(related\_cluster)$
       \If{$cluster\_weight > max\_distance$}
@@ -360,8 +360,8 @@ In order to try to counter this problem, we used k means clustering. Algorithm~\
     \algstore{kmeansalg2}
     \end{algorithmic}
     \end{algorithm}
-    \begin{algorithm}                     
-    \begin{algorithmic} [1]              
+    \begin{algorithm}
+    \begin{algorithmic} [1]
     \algrestore{kmeansalg2}
       \If{$closest\_centroid = nil$}
         \State $closest\_centroid = centroid$
@@ -393,8 +393,8 @@ In order to try to counter this problem, we used k means clustering. Algorithm~\
     \algstore{kmeansalg3}
     \end{algorithmic}
     \end{algorithm}
-    \begin{algorithm}                     
-    \begin{algorithmic} [1]              
+    \begin{algorithm}
+    \begin{algorithmic} [1]
     \algrestore{kmeansalg3}
       \State $new\_centroids \gets \emptyset$
       \For{$centroid \gets centroids$}
@@ -427,8 +427,8 @@ In order to try to counter this problem, we used k means clustering. Algorithm~\
     \algstore{kmeansalg4}
     \end{algorithmic}
     \end{algorithm}
-    \begin{algorithm}                     
-    \begin{algorithmic} [1]              
+    \begin{algorithm}
+    \begin{algorithmic} [1]
     \algrestore{kmeansalg4}
           \If{$old\_centroid = new\_centroid$}
             \State $centroid\_found \gets true$
@@ -630,11 +630,11 @@ Once we have our hierarchy set up, we still have to use it to find an explanatio
 
 We created an interface for the system that we have proposed. This interface is web based. It consists of a backend server and a front end for visualizations. The Backend is responsible for querying the Apache Spark daemon with relevant queries. The front end allows the user to define observations and visualize explanations. The front end interface makes use of Mapbox to display the map, Deck.gl to create a visualization overlay on the map. The overlay can be points or polygons. In order to handle state changes in the front end, we used React.js front end library. We also show histograms related to the data. For displaying these histograms, Baidu eCharts library was used. Since the front end was programmed in ES6, webpack was used for transpilation\citep{webpack}. Fig.~\ref{fig:framework} shows us a flow diagram for our system.
 
-In order for the users to easily form observations, our frontend provides them with a series of histograms. Each bar on a histogram represents an aggregate query. Instead of manually writing queries, the user can easily use the bars in the histograms to be used as variables. These variables can then be used in an arithmetic expression representing the users observations. The user can also define custom variables in the form of aggregate SQL queries manually using the interface.
+In order for the users to easily form observations, our frontend provides them with a series of histograms. Each bar on a histogram represents an aggregate query. Instead of writing queries, the user can easily use the bars in the histograms to be used as variables. These variables can then be used in an arithmetic expression representing the users observations. The user can also define custom variables in the form of aggregate SQL queries manually using the interface.
 
 The back end of the system is an Apache Spark application which calls the Spark daemon for requests of aggravation, intervention, and hierarchical intervention. I must be noted however that there are some operations that the backend performs which are not executed as Spark tasks, such as the creation of an R-Tree. The framework that we have designed requires us to parse and alter queries at multiple points in the pipeline. In order to avoid redesigning the wheel we use the parser implementation provided by PrestoDB\citep{prestodb}.
 
-To allow the front end to communicate with the backend, there is a middleware application. The job of the middleware is to take the input from the front end and execute our backend application with the appropriate function and input parameters. Our middleware is designed using Node js\citep{tilkov2010node,cantelon2017node}. It takes aggregate queries, selectivity range and number of explanations as input and sends it to the backend application. The results are then sent to the frontend. 
+To allow the front end to communicate with the backend, there is a middleware application. The job of the middleware is to take the input from the front end and execute our backend application with the appropriate function and input parameters. Our middleware is designed using Node js\citep{tilkov2010node,cantelon2017node}. It takes aggregate queries, selectivity range and number of explanations as input and sends it to the backend application. The results are then sent to the frontend.
 
 \begin{figure}[h]
 \includegraphics[width=\columnwidth]{interface.png}
@@ -643,5 +643,3 @@ To allow the front end to communicate with the backend, there is a middleware ap
 \end{figure}
 
 Fig.~\ref{fig:interface} shows the interface that we have created for our solution. The users may add variables from the histograms or they may add them from their own sql queries. The interface allows the user to filter by attribute before viewing the histograms.
-
-
