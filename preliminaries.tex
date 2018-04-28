@@ -3,10 +3,10 @@
 In order to understand the system. The reader needs to understand a few concepts related to Data Mining and Databases. This chapter attempts to give a brief overview of the underlying concepts needed to understand the system.
 
 \section{Star Schema}
-Our system has the underlying assumption that the data that will be used to generate explanations is the Fact Table for a Star schema\citep{giovinazzo2000object,adamson2010star}. To understand the Fact Table, it is important to understand the structure of the Star Schema. A traditional relational database system contains a set of tables related by primary and foreign keys. For instance, We may take the example of students taking courses. The students and classes can be represented in separate tables. One student can take multiple courses and a course can have multiple students. This is an example of a many-to-many relationship.
-In order to represent this data in a relational database, the course table and the students table need to have a primary and foreign key. Another way of storing this data without primary and foreign keys is to save all students information against all course information. Tables.~\ref{tbl:fact} and ~\ref{tbl:payment_type} show some dummy data to illustrate our example for our running example of the NYC taxi data.
+Our system has the underlying assumption that the data that will be used to generate explanations is the Fact Table for a Star schema\citep{giovinazzo2000object,adamson2010star}. To understand the Fact Table, it is important to understand the structure of the Star Schema. A traditional relational database system contains a set of tables related by primary and foreign keys. For instance, We can use our running example of the NYC Taxi Trips dataset to illustrate a Star Schema. The trips and payment type can be represented in separate tables. One trip can have a single payment type while a payment type can be used in multiple trips. This is an example of a one-to-many relationship.
+In order to represent this data in a relational database, the $trips$ table and the $payment\_type$ table need to have a primary and foreign key. Another way of storing this data without primary and foreign keys is to save all payment type information against all trips. Tables.~\ref{tbl:payment_type} and ~\ref{tbl:fact} show some dummy data to illustrate our example for our running example of the NYC taxi data.
 
-The illustrated example has a normalized schema\citep{beeri1988sophisticate}. Table~\ref{tbl:fact} can be considered as the central part of the schema because it contains the foreign key to the $payment_type$ table.
+The illustrated example has a normalized schema\citep{beeri1988sophisticate}. Table~\ref{tbl:fact} can be considered as the central part of the schema because it contains the foreign key to the $payment\_type$ table.
 
 
 
@@ -49,10 +49,10 @@ The illustrated example has a normalized schema\citep{beeri1988sophisticate}. Ta
     \hline
   \end{tabular}
 \end{center}
-\captionof{table}{Fact Table}
+\captionof{table}{Trips Table}
 \label{tbl:fact}
 
-This type of schema where the there is a central table consisting of facts while the remaining tables contain the meta data is called a star schema. The central table is called the Fact Table, whereas, the tables containing the meta data are called the Dimension Tables.
+This type of schema where there is a central table consisting of facts while the remaining tables contain the meta data is called a star schema. The central table is called the Fact Table, whereas, the tables containing the meta data are called the Dimension Tables. In the case of the schema we just defined, Table.~\ref{tbl:payment_type} is the dimension table while Table.~\ref{tbl:fact} is the fact table.
 
 \section{Observations}
 \begin{figure}[ht]
