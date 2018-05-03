@@ -5,6 +5,8 @@
 \section{Introduction}
 Hierarchical Intervention is an extension of the intervention approach. The idea behind hierarchical intervention is to improve our explanations by grouping together spatially colocated polygons in our candidate explanation. We divide the space into a set of levels. The first level contains the entire space as one cluster, while the last level contains each zone or each point in each cluster.
 
+If we look at a high level overview of our method, it involves partitioning the data spatially into a hierarchy. The top level of the hierarchy consists of all the tuples in the data. The lowest level of the hierarchy consists of each individual tuple. We use this hierarchy to perform aggravation and intervention. Each cluster in the hierarchy forms a spatial predicate. Finally, we compare all the clusters in every level of the hierarchy to rank explanations.
+
 \section{Spatial Partitioning/Clustering}
 There are several approaches to cluster data. Each clustering approach has a large impact on the resulting explanations. In order to understand the issues with explanations using spatial clustering, we need to have an understanding of the clustering approaches.
 
