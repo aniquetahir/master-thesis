@@ -1,1 +1,64 @@
-\chapter{RAW DATA}
+\chapter{NYC TLC SCHEMA}
+\label{chp:nyc_data}
+
+\begin{center}
+  \begin{tabular}{ | c | c | }
+    \hline
+    \textbf{Attribute} & \textbf{Type} \\ \hline
+		VendorID & int \\ \hline
+		tpep\_pickup\_datetime  & date \\ \hline
+		tpep\_dropoff\_datetime & date \\ \hline
+		Passenger\_count & int \\ \hline
+		Trip\_distance & float \\ \hline
+		Pickup\_longitude & float \\ \hline
+		Pickup\_latitude & float \\ \hline
+		RateCodeID & int \\ \hline
+		Store\_and\_fwd\_flag & bool \\ \hline
+		Dropoff\_longitude & float \\ \hline
+		Dropoff\_ latitude & float \\ \hline
+		Payment\_type & int \\ \hline
+		Fare\_amount & float \\ \hline
+		Extra & float \\ \hline
+		MTA\_tax & float \\ \hline
+		Improvement\_surcharge & float \\ \hline
+		Tip\_amount & float \\ \hline
+		Tolls\_amount & float \\ \hline
+		Total\_amount & float \\ \hline
+  \end{tabular}
+\end{center}
+\captionof{table}{Trips Table}
+\label{tbl:append_nyc}
+
+\begin{center}
+  \begin{tabular}{ | c | c | }
+    \hline
+    \textbf{Attribute} & \textbf{Type} \\ \hline
+		VendorID & int \\ \hline
+		Name & string \\ \hline
+  \end{tabular}
+\end{center}
+\captionof{table}{Vendors Table}
+\label{tbl:append_nyc_vendors}
+
+
+\begin{center}
+  \begin{tabular}{ | c | c | }
+    \hline
+    \textbf{Attribute} & \textbf{Type} \\ \hline
+		RateCodeID & int \\ \hline
+		Name & string \\ \hline
+  \end{tabular}
+\end{center}
+\captionof{table}{Rate Code Table}
+\label{tbl:append_nyc_ratecode}
+
+\begin{center}
+  \begin{tabular}{ | c | c | }
+    \hline
+    \textbf{Attribute} & \textbf{Type} \\ \hline
+		Payment\_type & int \\ \hline
+		Name & string \\ \hline
+  \end{tabular}
+\end{center}
+\captionof{table}{Payment Type Table}
+\label{tbl:append_nyc_payment}

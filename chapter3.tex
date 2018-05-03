@@ -54,8 +54,7 @@ The set of clusters,$G_i$, for level $l_i$ can be defined as $G_i=\{p_k|(x_k^2 +
 
 Greedy Hierarchical Clustering turned out to have a drawback when we use it for explanations. It selects seed points randomly. This means that in each level, the clusters can be highly imbalanced. We compared this approach to K means(Voronoi partitioning)\citep{hartigan1979algorithm,aurenhammer2000voronoi}, R Tree\citep{guttman1984r} and R* Tree\citep{beckmann1990r}.
 
-The main idea behind the hierarchical intervention approach, regardless of the partitioning algorithm, is to help us in increasing the domain for our degree of explanation. Since intervention is a subset of this approach, the domain is at least as large as that for intervention.
-
+The main idea behind the hierarchical intervention approach, regardless of the partitioning algorithm, is to help us in increasing the domain for our degree of explanation. Since intervention is a subset of this approach, the domain is at least as large as that for intervention. After we have partitioned our data, each partition can be used as a predicate for aggravation and/or intervention.
 
 \section{Extending Hierarchical Intervention}
 \label{sec:extending_hi}
@@ -643,3 +642,45 @@ To allow the front end to communicate with the backend, there is a middleware ap
 \end{figure}
 
 Fig.~\ref{fig:interface} shows the interface that we have created for our solution. The users may add variables from the histograms or they may add them from their own sql queries. The interface allows the user to filter by attribute before viewing the histograms.
+
+In order to give a better idea of how the GUI works, we will use the Tempe City Opioid Abuse Probable EMS Call data to show a use case \citep{tempeopiod}. This data consists of emergency calls related to opioid related cases in the city of Tempe. The location of the incidents and attributes about the subjects such as gender, veteran status, and whether the subject is a student, are recorded in this data.
+
+\begin{figure}[h]
+\begin{center}
+    \includegraphics[width=0.5\columnwidth]{guifilter.png}
+\end{center}
+\caption{The filter interface for the GUI}
+\label{fig:guifilter}
+\end{figure}
+
+Before starting the analysis. The GUI allows the user to filter the data based on its attributes. Fig.~\ref{fig:guifilter} shows the interface for prefiltering data.
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.5\columnwidth]{guivariable.png}
+  \end{center}
+\caption{The histogram interface for the GUI}
+\label{fig:guivariable}
+\end{figure}
+
+Fig.~\ref{fig:guivariable} shows how the user can add bars on a histograms as observations. The GUI produces histograms based on the filtered data. In order to facilitate users who do not want to use a query language like SQL, the GUI allows them to add bars on the histograms as variables. Under the hood each bar is represented as an aggragate SQL query. The GUI also allows the user to add their own SQL if they want to. The user can also choose to view the scatterplot or the heatmap for the data represented by each bar.
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.5\columnwidth]{guiparameters.png}
+  \end{center}
+\caption{The parameters interface for the GUI}
+\label{fig:guiparameters}
+\end{figure}
+
+Fig.~\ref{fig:guiparameters} shows the user interface for specifying various parameters for the calculations. The user can specify the relationship between variables here.
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.5\columnwidth]{guiresults.png}
+  \end{center}
+\caption{The map visualization interface for the GUI}
+\label{fig:guiresults}
+\end{figure}
+
+Finally, Fig.~\ref{fig:guiresults} shows the map visualization of the explanations provided by the system.
