@@ -3,7 +3,7 @@
 In order to understand the system. The reader needs to understand a few concepts related to Data Mining and Databases. This chapter attempts to give a brief overview of the underlying concepts needed to understand the system.
 
 \section{Star Schema}
-Our system has the underlying assumption that the data that will be used to generate explanations is the Fact Table for a Star schema\citep{giovinazzo2000object,adamson2010star}. To understand the Fact Table, it is important to understand the structure of the Star Schema. A traditional relational database system contains a set of tables related by primary and foreign keys. For instance, We can use our running example of the NYC Taxi Trips dataset to illustrate a Star Schema. The trips and payment type can be represented in separate tables. One trip can have a single payment type while a payment type can be used in multiple trips. This is an example of a one-to-many relationship.
+Our system has the underlying assumption that the data that will be used to generate explanations is the Fact Table for a Star schema\citep{giovinazzo2000object,adamson2010star}. To understand the Fact Table, it is important to understand the structure of the Star Schema. A traditional relational database system contains a set of tables related by primary and foreign keys. For instance, we can use our running example of the NYC Taxi Trips dataset to illustrate a Star Schema. The trips and payment type can be represented in separate tables. One trip can have a single payment type while a payment type can be used in multiple trips. This is an example of a one-to-many relationship.
 In order to represent this data in a relational database, the $trips$ table and the $payment\_type$ table need to have a primary and foreign key. Another way of storing this data without primary and foreign keys is to save all payment type information against all trips. Tables.~\ref{tbl:payment_type} and ~\ref{tbl:fact} show some dummy data to illustrate our example for our running example of the NYC taxi data.
 
 The illustrated example has a normalized schema\citep{beeri1988sophisticate}. Table~\ref{tbl:fact} can be considered as the central part of the schema because it contains the foreign key to the $payment\_type$ table.
@@ -76,7 +76,7 @@ SELECT AVG(tip_percentage) FROM
 FROM nyc_data
 WHERE payment_type = 1
 \end{lstlisting}
-
+\newpage
 \renewcommand{\lstlistingname}{Query}% Listing -> Algorithm
 \begin{lstlisting}[language=SQL, caption=Aggregate Query for average tip percentage with cash, label=qry:aggregateexample2]
 SELECT AVG(tip_percentage) FROM

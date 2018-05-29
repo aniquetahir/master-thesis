@@ -65,15 +65,16 @@
 \title{A Framework for Spatial Database Explanations}
 \author{Anique Tahir}
 \degreeName{Master of Science}
-\defensemonth{April}
-\gradmonth{May}
+\defensemonth{May}
+\gradmonth{August}
 \gradyear{2018}
 \chair{Mohamed Sarwat, Chair \\ Sharon Hsiao\\ Ross Maciejewski}
 \maketitle
 \doublespace
 \include{abstract}
 % \acknowledgementpage{}
-%\include{ack}
+\include{ack}
+\renewcommand{\cftlabel}{CHAPTER}
 \tableofcontents
 % This puts the word "Page" right justified above everything else.
 \addtocontents{toc}{~\hfill Page\par}
@@ -90,16 +91,18 @@
 % \listoftables
 \addtocontents{lot}{Table~\hfill Page \par}
 \newpage
+\renewcommand{\cftlabel}{FIGURE}
 \addcontentsline{toc}{part}{LIST OF FIGURES}
-\listoffigures
 \addtocontents{lof}{Figure~\hfill Page \par}
+\listoffigures
+\renewcommand{\cftlabel}{CHAPTER}
 \newpage
 % \addcontentsline{toc}{part}{LIST OF SYMBOLS}
 \clearpage
 % \symbolspage{}
 % \addcontentsline{toc}{part}{PREFACE}
 \clearpage
-\addtocontents{toc}{CHAPTER \par}
+%\addtocontents{toc}{CHAPTER \par}
 % \prefacepage{\\Enter content here.}
 
 % This gets the headers for the LOF right on the first page.  Subsequent pages

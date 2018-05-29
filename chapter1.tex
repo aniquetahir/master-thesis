@@ -1,11 +1,17 @@
-\chapter{Problem Overview}
+\chapter{PROBLEM OVERVIEW}
 
 
 \label{sec:Intro}
 \section{Introduction}
 
 % Motivation
-When we analyze data, we might make some observations that pique our curiousity. We might want to explain trends or anomalies in data. Without an automated system, a data analyst has to go through several manual operations to find an explanation. If the size of the data is small, doing so might take a bit of time, but if we are dealing with a large amount of data, it can become a tedious process. Our system is designed to answer questions based on observations over a large amount of data. In the past few years there has been a lot of developments in the area of Big Data. Companies like Uber and Facebook handle large amounts of spatial data every day. This data can be used to improve service. For example, if we have taxi cab data, we might want to use this data to figure out the best locations for taxi cab stands. Good locations for taxi cab stands can result in less fuel consumption and lower wait times for the customers. A similar case can be made for medical emergencies and hospital locations. Even though, the cost of building a hospital is much higher than that of building a taxi station, the initial cost of building the infrastructure is assuaged over time if the location is beneficial. Companies like UPS are already saving millions of gallons of fuel per year by using Big Data Analytics. UPS uses On-Road Integrated Optimization and Navigation system(ORION) to determine the order of delivery, routes, and loading plans \citep{upsarticle}.
+When we analyze data, we might make some observations that pique our curiousity. We might want to explain trends or anomalies in data. Without an automated system, a data analyst has to go through several manual operations to find an explanation. If the size of the data is small, doing so might take a bit of time, but if we are dealing with a large amount of data, it can become a tedious process. Our system is designed to answer questions based on observations over a large amount of data. In the past few years there has been a lot of developments in the area of Big Data.
+
+We can find several examples of decisions being made using big data analysis in everyday situations. Companies like Uber and Facebook handle large amounts of spatial data every day. This data can be used to improve service. UPS is saving millions of gallons of fuel per year by using Big Data Analytics. UPS uses On-Road Integrated Optimization and Navigation system(ORION) to determine the order of delivery, routes, and loading plans \citep{upsarticle}.
+
+Given the tremendous benefits of automated analysis, the motivation for this thesis was to create an automated system to help analysts answer questions about observations. The idea is to create a system which works on spatial data in general. This thesis comes up with a generic system to explain observations on spatial data.
+
+% For example, if we have taxi cab data, we might want to use this data to figure out the best locations for taxi cab stands. Good locations for taxi cab stands can result in less fuel consumption and lower wait times for the customers. A similar case can be made for medical emergencies and hospital locations. Even though, the cost of building a hospital is much higher than that of building a taxi station, the initial cost of building the infrastructure is assuaged over time if the location is beneficial. Companies like
 
 \begin{figure}[ht]
 \includegraphics[width=\columnwidth]{yellowdata_count.eps}
@@ -32,7 +38,7 @@ Finally, \textbf{Salient Features}(Section~\ref{sec:salient_features}) can be us
 Each approach has its own set of advantages and disadvantages. While one approach might give us very specific explanations that show a textbook example of our observation, another might give us an explanation which is hard to see in the context of the observation but has a large overall impact on it. One of the objectives of this paper is to compare which approach is suitable considering its context.
 
 We implemented(Section~\ref{sec:implementation}) these approaches, including hierarchical intervention using distributed data frameworks\citep{borthakur2007hadoop,dean2008mapreduce,shanahan2015large,zaharia2016apache}. We made optimizations in our implementation to make sure our approach is orders of magnitude faster than the naive approach. The implementation of salient features was used from the Data Polygamy framework \citep{chirigati2016data}.
-
+\newpage
 In order to compare each approach, we defined a few evaluation metrics. The \textbf{Intensity}(Section~\ref{sec:intensity}) metric measures how relevant each explanation is to the observation. To be more specific, it measures the value of the observation for the top explanations for each approach. The \textbf{Influence}(Section~\ref{sec:influence}) metric measures the observation when the top explanation is removed from the data. We also compare the speed(Section~\ref{sec:speed}) of our implementations of each approach.
 
 \section{Related Work}

@@ -1,11 +1,53 @@
-\chapter{Spatial Explanations using Hierarchical Intervention}
+\chapter{SPATIAL EXPLANATIONS USING HIERARCHICAL INTERVENTION}
 \label{chp:proposed}
 \label{sec:hei_intervention}
+
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{framework}
+\caption{An outline for our system framework}
+\label{fig:framework}
+\end{figure}
 
 \section{Introduction}
 Hierarchical Intervention is an extension of the intervention approach. The idea behind hierarchical intervention is to improve our explanations by grouping together spatially colocated polygons in our candidate explanation. We divide the space into a set of levels. The first level contains the entire space as one cluster, while the last level contains each zone or each point in each cluster.
 
 If we look at a high level overview of our method, it involves partitioning the data spatially into a hierarchy. The top level of the hierarchy consists of all the tuples in the data. The lowest level of the hierarchy consists of each individual tuple. We use this hierarchy to perform aggravation and intervention. Each cluster in the hierarchy forms a spatial predicate. Finally, we compare all the clusters in every level of the hierarchy to rank explanations.
+
+Fig.~\ref{fig:interface} shows the system diagram for our solution which uses hierarchical intervention. We take inputs in the form for aggregate queries. An arithmetic expression encapsulates the relationships between these queries. On the other hand, we have a spatial dataset. We use clustering/partitioning to create a hierarchy out of our spatial data. Depending on the hierarchy that we have created and our inputs, we perform aggravation and intervention. The results of aggravation and intervention are used to in a ranking system based on an explanation index. The explanation index measures the candidate explanations as a linear relationship between aggravation and intervention. How much each explanation approach is weighted in the explanation index is under the control of the data analyst. Finally the top results are used for visualisation. We have created a web based GUI to display these kinds of explanations.
+
+In order to get a better understanding of our spatial explanation approach, we will highlight our algorithm. We have designed our approach in the context of the programming paradigm provided by Apache Spark. The algorithm represents each level in our spatial hierarchy in DataFrames. The leaf nodes are populated using aggravation/intervention operations. The intervention/aggravation values of the non leaf nodes are populated using the data from children nodes. Since our technique uses memoization in a directed acyclic graph, it can be categorized as a dynamic programming approach.
+
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{step1}
+\caption{The hierarchy used by our algorithm}
+\label{fig:step1}
+\end{figure}
+
+Fig.~\ref{fig:step1} shows our hierarchy in the form of a tree, nodes with overlapping children are marked using a red dashed line. The children of these nodes might represent clusters of tuples which are present in multiple nodes. Since we want to build our graph bottom up, such overlaps present a concern. We do not want to use tuples multiple times in our calculations.
+
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{step2}
+\caption{Dataframes represent each level in our hierarchy}
+\label{fig:step2}
+\end{figure}
+
+We represent each node in our hierarchy in a dataframe(Fig.~\ref{fig:step2}). The dataframe contains the id of the node($tid$), the id of the parent node($parent$), intervention, aggravation, aggregates of each attributes, and a column for intervention and aggravation for each aggregate query in our input. While dataframes look like traditional RDBMS tables, they have a few differences. Our solution exploits these differences to get more out of the system. In this case we use the arbitrary number of columns in the dataframe to our advantage by representing the aggravation/intervention for each query in a seperate column.
+
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{step3}
+\caption{We use memoization to build DAG bottom up}
+\label{fig:step3}
+\end{figure}
+
+In order to build the DAG bottom up we want to use the values of aggravation and intervention in the children nodes to build up. At the beggining of the algorithm we keep a record of the aggregates for the entire dataset. As mentioned before, we also have aggregates for each node in our dataframe. We can use these two values to calculate aggravation or intervention. For example, if our aggregate query was $SUM$ of an attribute and the node we are looking at consists of two child nodes, then the aggravation value would just be the sum of both the children. The intervention value would be the difference between the sum of the child nodes and the sum for the entire data. Using this approach we can build the explanations up using a left join on the parent and children dataframes.
+
+\begin{figure}[h]
+\includegraphics[width=\columnwidth]{step5}
+\caption{Recalculation is done for overlapping nodes}
+\label{fig:step4}
+\end{figure}
+
+Once we have build up our DAG one level, we still have tuples which contain incorrect data. These are the tuples with duplicates. Fig.~\ref{fig:step4} shows a representation of this scenario. In order to handle this case, we split our dataframe into two parts: one containing nodes with overlap bit, and one containing tuples without the overlap bit. The Dataframe with the overlap bit tuples, has the intervention and aggravation values recalculated. Finally the split dataframes are merged together to give a final dataframe for the level in the hierarchy without and recounted values. This dataframe can be used for constructing the DAG up further iteratively till we reach the root node.
 
 \section{Spatial Partitioning/Clustering}
 There are several approaches to cluster data. Each clustering approach has a large impact on the resulting explanations. In order to understand the issues with explanations using spatial clustering, we need to have an understanding of the clustering approaches.
@@ -623,11 +665,7 @@ Once we have our hierarchy set up, we still have to use it to find an explanatio
 
 \section{Interface}
 
-\begin{figure}[h]
-\includegraphics[width=\columnwidth]{framework}
-\caption{An outline for our system framework}
-\label{fig:framework}
-\end{figure}
+
 
 We created an interface for the system that we have proposed. This interface is web based. It consists of a backend server and a front end for visualizations. The Backend is responsible for querying the Apache Spark daemon with relevant queries. The front end allows the user to define observations and visualize explanations. The front end interface makes use of Mapbox to display the map, Deck.gl to create a visualization overlay on the map. The overlay can be points or polygons. In order to handle state changes in the front end, we used React.js front end library. We also show histograms related to the data. For displaying these histograms, the Baidu eCharts library was used. Since the front end was programmed in ES6, webpack was used for transpilation\citep{webpack}. Fig.~\ref{fig:framework} shows us a flow diagram for our system.
 
