@@ -74,9 +74,9 @@ Observation = q1/q2
 \end{lstlisting}
 
 \section{Precision and Recall}
-\begin{wrapfigure}{L}{0.5\textwidth}
+\begin{wrapfigure}{R}{0.4\textwidth}
   \begin{center}
-    \includegraphics[width=0.48\textwidth]{outbreakheatmap.png}
+    \includegraphics[width=0.38\textwidth]{outbreakheatmap.png}
   \end{center}
   \caption{A heatmap showing sythesized data}
   \label{fig:synthesized_data}
@@ -89,15 +89,25 @@ Observation = q1/q2
 
 Since it is very difficult to find datasets with the ground truth we used synthetic datasets to evaluate our solution\citep{maciejewski2009generating}. The synthetic dataset is fabricated using real data from Indiana Public Health Emergency Surveillance System. This data contains information about Patients in Indiana and their health issues over time and location. We can calculate precision and recall using this data\citep{powers2011evaluation}. The data is synthesized in such a way that it shows similar patterns to the actual data. Synthetic data related to outbreaks of certain diseases is synthesized into this data. In order to evaluate our system, we used the temporal component of the outbreak and the type of disease as our observation. To be specific, the synthetic data consisted of an outbreak of Gastrointestinal infection in July. Our observation was the ratio of the number of gastrointestinal infection incidents between June and July when there's an infection against the number of gastrointestinal infection incidents between June and July in synthesized data where there wasn't an outbreak. Precision and Recall was calculated by comparing the areas of the top ten explanations related to the ground truth with the approximate area covered by the outbreak data. We cannot use the individual points to calculate precision and recall because there is a lot of data unrelated to the outbreak which occurs in proximity. To put things into context, each instance of the synthesized data contains ~2 million records. The data related to the outbreak consists of a few dozen records. Fig.~\ref{fig:synthesized_data} shows a heatmap of all the points in the synthesized data. The outbreak for this particular instance only affects a small part of Indiana to the North West just below Lake Michigan. Fig.~\ref{fig:precisionrecall} shows the points representing the outbreak as well as some of the top polygons returned using Hierarchical Intervention. While our system is designed to work fast on partitioning techniques with no overlaps like K-Means and Greedy Hierarchical Clustering. Some of the clustering apporaches that we use which give better results do have overlaps. Thus we used R*-Tree partitioning in our example. The candidate explanations provided by this partitioning techniques can have spatial overlaps.
 
+
+% \begin{wrapfigure}{R}{0.5\textwidth}
+%   \begin{center}
+%     \includegraphics[width=0.48\textwidth]{precisionrecall.png}
+%   \end{center}
+%   \caption{Synthetic Outbreak data. The circles show the ground truth while the polygons show the relevant explanations produced by our system}
+%   \label{fig:precisionrecall}
+% \end{wrapfigure}
 \begin{figure}[h]
-\includegraphics[width=\columnwidth]{precisionrecall.png}
+\begin{center}
+  \includegraphics[width=0.7\columnwidth]{precisionrecall.png}
+\end{center}
 \caption{Synthetic Outbreak data. The circles show the ground truth while the polygons show the relevant explanations produced by our system}
 \label{fig:precisionrecall}
 \end{figure}
 
 Let $E$ be the area represented by our polygons. Let $O$ be the area represented by the Outbreak points. Then,
 $$Precision = \frac{E \cap O}{E} = 0.31$$
-
+\newpage
 For calculating recall, we can use the actual outbreak points since it doesn't require false positives.
 $$Recall = \frac{true\_positives}{false\_negatives} = 0.74$$
 
